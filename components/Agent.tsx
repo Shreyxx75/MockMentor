@@ -65,7 +65,19 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     const handleCall = async () => {
         setCallStatus(CallStatus.CONNECTING);
 
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+        const workflowId = process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID;
+        if (!workflowId) {
+            alert('Interview system is not configured. Please contact support.');
+            setCallStatus(CallStatus.INACTIVE);
+            return;
+        }
+        if (!userId) {
+            alert('User ID missing. Please sign in again.');
+            setCallStatus(CallStatus.INACTIVE);
+            return;
+        }
+
+        await vapi.start(workflowId, {
             variableValues: {
                 username: userName,
                 userid: userId,
