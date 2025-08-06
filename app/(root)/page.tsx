@@ -4,13 +4,18 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { dummyInterviews } from '@/constants'
 import InterviewCard from '@/components/InterviewCard'
-import { getCurrentUser, getInterviewsByUserId } from '@/lib/actions/auth.action'
+import { getCurrentUser, getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/auth.action'
 
 const page = async() => {
   const user = await getCurrentUser();
-  const userInterviews = await getInterviewsByUserId(user?.id!);
+
+  const [ userInterviews, latestInterviews ] = await Promise.all([
+    await getInterviewsByUserId(user?.id!),
+    await getLatestInterviews({ userId: user?.id! })
+  ]);
 
   const hasPastInterviews = userInterviews?.length > 0;
+  const hasUpcomnigInterviews = latestInterviews?.length > 0;
 
   return (
     <>
@@ -53,9 +58,14 @@ const page = async() => {
           Upcoming Interviews
         </h2>
         <div className="interviews-section">
-          {dummyInterviews.map((interview) => (
-            <InterviewCard key={interview.id} {...interview}/>
-          ))}
+          {
+            hasUpcomnigInterviews ? (
+              latestInterviews?.map((interview) => (
+                <InterviewCard key={interview.id} {...interview}/>
+            ))) : (
+              <p>No upcoming interviews available. Check back later!</p>
+            )
+          }
         </div>
 
       </section>
