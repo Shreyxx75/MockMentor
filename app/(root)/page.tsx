@@ -9,8 +9,7 @@ import { getCurrentUser, getInterviewsByUserId, getLatestInterviews } from '@/li
 const page = async() => {
   const user = await getCurrentUser();
 
-  if (!user || !user.id) {
-    // Redirect to sign-in or show error
+  if (!user || typeof user.id !== 'string' || !user.id) {
     redirect('/sign-in');
     return null;
   }
