@@ -27,23 +27,10 @@ export async function POST(request: Request) {
                     Thank you! <3`,
         });
 
-        console.log('AI questions output:', questions);
-
-        let parsedQuestions: string[];
-        try {
-            parsedQuestions = JSON.parse(questions);
-            if (!Array.isArray(parsedQuestions)) {
-                throw new Error('Questions is not an array');
-            }
-        } catch (err) {
-            console.error('Failed to parse questions:', err, questions);
-            return Response.json({ success: false, error: 'Invalid questions format from AI' }, { status: 500 });
-        }
-
         const interview = {
             role, type, level,
             techstack: techstack.split(','),
-            questions: parsedQuestions,
+            questions: JSON.parse(questions),
             userId: userid,
             finalized: true,
             coverImage: getRandomInterviewCover(),
