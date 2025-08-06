@@ -4,8 +4,14 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { dummyInterviews } from '@/constants'
 import InterviewCard from '@/components/InterviewCard'
+import { getCurrentUser, getInterviewsByUserId } from '@/lib/actions/auth.action'
 
-const page = () => {
+const page = async() => {
+  const user = await getCurrentUser();
+  const userInterviews = await getInterviewsByUserId(user?.id!);
+
+  const hasPastInterviews = userInterviews?.length > 0;
+
   return (
     <>
       <section className="card-cta">
@@ -32,12 +38,14 @@ const page = () => {
           Your Mock Interviews
         </h2>
         <div className="interviews-section">
-          {dummyInterviews.map((interview) => (
-            <InterviewCard key={interview.id} {...interview}/>
-          ))}
-          {/*<p>
-            No interviews scheduled yet. Start by creating a new mock interview.
-          </p>*/}
+          {
+            hasPastInterviews ? (
+              userInterviews?.map((interview) => (
+                <InterviewCard key={interview.id} {...interview}/>
+            ))) : (
+              <p>No interviews scheduled yet. Start by creating a new mock interview.</p>
+            )
+          }
         </div>
       </section>
       <section className="flex flex-col gap-6 mt-8">
