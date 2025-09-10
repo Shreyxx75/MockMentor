@@ -1,4 +1,4 @@
-import { getInterviewsById } from '@/lib/actions/general.action';
+import { getInterviewById } from '@/lib/actions/general.action';
 import { getRandomInterviewCover } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
@@ -9,7 +9,7 @@ import { getCurrentUser } from '@/lib/actions/auth.action';
 const page = async ({ params }: RouteParams) => {
     const { id } = await params;
     const user = await getCurrentUser();
-    const interview = await getInterviewsById(id);
+    const interview = await getInterviewById(id);
 
     if (!interview) redirect('/');
 
@@ -26,8 +26,8 @@ const page = async ({ params }: RouteParams) => {
             <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit capitalize">{interview.type}</p>
         </div>
         <Agent
-            userName={user?.name}
-            type={user?.type}
+            userName={user?.name || ''}
+            userId={user?.id}
             interviewId={id}
             type="interview"
             questions={interview.questions}
