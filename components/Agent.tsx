@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { vapi } from '@/lib/vapi.sdk'
+import { interviewer } from '@/constants'
 
 enum CallStatus {
     INACTIVE = 'INACTIVE',
@@ -101,7 +102,7 @@ const Agent = ({ userName, userId, type, interviewId, questions }: AgentProps) =
                 formattedQuestions = questions.map((question) => '- ${question}').join('\n');
             }
 
-            await vapi.start('INTERVIEWER', {
+            await vapi.start(interviewer, {
                 variableValues: {
                     questions: formattedQuestions,
                 }
