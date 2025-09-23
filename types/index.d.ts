@@ -39,7 +39,7 @@ interface User {
 }
 
 interface InterviewCardProps {
-  id?: string;
+  interviewId?: string;
   userId?: string;
   role: string;
   type: string;
@@ -58,7 +58,7 @@ interface AgentProps {
 
 interface RouteParams {
   params: Promise<Record<string, string>>;
-  searchParams: Promise<Record<string, string>>;
+  searchParams: Record<string, string>;
 }
 
 interface GetFeedbackByInterviewIdParams {
