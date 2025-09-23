@@ -58,7 +58,7 @@ interface AgentProps {
 
 interface RouteParams {
   params: Promise<Record<string, string>>;
-  searchParams: Record<string, string>;
+  searchParams: Promise<Record<string, string>>;
 }
 
 interface GetFeedbackByInterviewIdParams {
