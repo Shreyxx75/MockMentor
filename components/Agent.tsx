@@ -90,18 +90,18 @@ const Agent = ({
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       console.log("handleGenerateFeedback");
 
-      const { success, feedbackId: id } = await createFeedback({
-        interviewId: interviewId!,
-        userId: userId!,
-        transcript: messages,
-        feedbackId,
-      });
+      try {
+        const { success } = await createFeedback({
+          interviewId: interviewId!,
+          userId: userId!,
+          transcript: messages,
+          feedbackId,
+        });
 
-      if (success && id) {
-        router.push(`/interview/${interviewId}/feedback`);
-      } else {
-        console.log("Error saving feedback");
-        router.push("/");
+        if (!success) console.log("Error saving feedback");
+        // we don't block navigation here — feedback page will fetch the saved feedback when available
+      } catch (err) {
+        console.error("createFeedback error:", err);
       }
     };
 
@@ -109,7 +109,22 @@ const Agent = ({
       if (type === "generate") {
         router.push("/");
       } else {
-        handleGenerateFeedback(messages);
+        // Navigate immediately so the user sees the feedback page right away.
+        // Run feedback generation asynchronously in the background (fire-and-forget).
+        router.push(`/interview/${interviewId}/feedback`);
+
+        // Only attempt to create feedback if we have at least one message.
+        // Run in background so the UI doesn't wait for AI analysis to complete.
+        if (messages && messages.length > 0) {
+          (async () => {
+            await handleGenerateFeedback(messages);
+          })();
+        } else {
+          // If there are no messages yet, still attempt to create feedback (the server can handle empty transcript)
+          (async () => {
+            await handleGenerateFeedback(messages);
+          })();
+        }
       }
     }
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
