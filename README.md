@@ -55,7 +55,7 @@ MockMentor is built using a modern full-stack web development stack:
 
 ## Demo
 
-Insert gif or link to demo
+[MOCKMENTOR](https://mock-mentor-lemon.vercel.app)
 
 
 ## Installation
